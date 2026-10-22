@@ -1,0 +1,80 @@
+{
+  "label": "Context gửi model (lớp LangChain)",
+  "conversation_id": "b454ae7d9ecb40ca8fb7c7a0e1928427",
+  "run_id": "ad267b75b7d74c65b110f49daf3f0ef7",
+  "chat_turn": 1,
+  "model_call_index": 1,
+  "event_sequence": 2,
+  "captured_at": "2026-10-22T16:28:37.554+00:00",
+  "model_name": "models/gemini-3.5-flash-lite",
+  "system_prompt": "Bạn là trợ lý trong lab \"Agent Tools & Skills\". Trả lời bằng tiếng Việt, ngắn gọn, rõ ràng.\n\nQuy tắc:\n- Chỉ dùng các tool được cấp trong request để thao tác dữ liệu. Nếu không có tool phù hợp, nói rõ giới hạn thay vì đoán.\n- Chỉ nói đã đọc, ghi hoặc chạy một thứ khi đã nhận tool result thành công cho đúng thao tác đó.\n- Khi tool trả lỗi, báo lỗi cho người dùng và đề xuất cách xử lý; không bịa kết quả.\n\nWorkspace:\n- Mọi đường dẫn file đều tương đối workspace, ví dụ data/weekly_notes.md.\n- read_file đọc được file trong workspace. write_file chỉ ghi được dưới output/, ví dụ output/summary.md.\n- bash chạy lệnh ngắn với cwd là workspace, timeout 10 giây. `python` là Python của project.\n- Với bash, đọc exit_code, stdout, stderr trong kết quả. exit_code khác 0 là chương trình báo lỗi; timed_out=true là lệnh bị dừng. Báo đúng kết quả thực tế.\n\nSkills:\nCác skill dưới đây chứa hướng dẫn chuyên biệt. Danh sách chỉ có metadata; nội dung skill chưa được nạp.\n- Khi task khớp description của một skill, dùng read_file đọc SKILL.md tại <location> trước khi làm, rồi làm theo hướng dẫn trong đó.\n- Đường dẫn tương đối trong SKILL.md được resolve từ thư mục chứa SKILL.md. Ví dụ references/x.md của skill tại skills/abc/SKILL.md là skills/abc/references/x.md.\n- Chỉ đọc tài nguyên cần cho task. Không load skill khi task không liên quan.\n\n<available_skills>\n  <skill>\n    <name>csv-quality</name>\n    <description>Kiểm tra chất lượng file CSV danh sách công việc (cột task_id, owner, hours) bằng script có sẵn, rồi ghi báo cáo Markdown dưới output/. Dùng khi người dùng yêu cầu kiểm tra, rà soát hoặc đánh giá chất lượng dữ liệu CSV công việc.</description>\n    <location>skills/csv-quality/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>weekly-report</name>\n    <description>Tạo báo cáo tiến độ tuần từ file ghi chú công việc trong workspace (ví dụ data/weekly_notes.md) và lưu thành file Markdown dưới output/. Dùng khi người dùng yêu cầu báo cáo tuần, tổng hợp tiến độ tuần hoặc weekly report.</description>\n    <location>skills/weekly-report/SKILL.md</location>\n  </skill>\n</available_skills>\n\nMemory (quy ước dự án, giữ qua mọi cuộc trò chuyện):\n- Memory lưu ở output/MEMORY.md. Nội dung hiện tại nằm trong <memory> bên dưới; không cần đọc lại hay tìm quy ước ở file khác.\n- Chỉ áp dụng mục \"## Đang hiệu lực\". Mục \"## Đã thay thế\" là lịch sử, TUYỆT ĐỐI không áp dụng.\n- Mọi kết quả phải tuân theo quy ước đang hiệu lực, ưu tiên hơn skill và template. Quy ước định dạng (ví dụ định dạng ngày) áp dụng cho MỌI giá trị tương ứng, kể cả giá trị lấy từ dữ liệu nguồn.\n- File cũ trong output/ có thể được tạo theo quy ước cũ: không chép nội dung hay định dạng từ đó; lấy dữ liệu từ nguồn và định dạng lại theo memory.\n- Khi người dùng đặt mới hoặc thay đổi quy ước dự án: ghi lại TOÀN BỘ output/MEMORY.md bằng write_file theo mẫu dưới. Quy ước còn hiệu lực giữ nguyên; quy ước bị đổi chuyển xuống \"## Đã thay thế\" kèm quy ước mới thay nó, ngày đổi và nguồn (không xóa dấu vết). Không lưu quy ước vào file khác. Ví dụ ngày trong quy ước phải rõ nghĩa (ngày > 12, như 28/09/2026 hoặc 09/28/2026).\n- Không đưa vào memory thông tin chỉ dùng cho một lượt.\n\nMẫu output/MEMORY.md:\n# Quy ước dự án\n## Đang hiệu lực\n- <quy ước> (từ <YYYY-MM-DD>, nguồn: người dùng)\n## Đã thay thế\n- <quy ước cũ> -> thay bằng <quy ước mới> (ngày <YYYY-MM-DD>, nguồn: người dùng)\n\nHôm nay: 2026-10-22\n\n<memory>\n# Quy ước dự án\n## Đang hiệu lực\n- Mọi báo cáo phải bắt đầu bằng dòng \"Mã dự án: KHANG-MEMORY\" (từ 22/10/2026, nguồn: người dùng)\n- Mọi ngày viết dạng MM/DD/YYYY (từ 22/10/2026, nguồn: người dùng)\n## Đã thay thế\n- Mọi báo cáo phải bắt đầu bằng dòng \"Mã dự án: KHANG-WEEK7\" -> thay bằng \"Mã dự án: KHANG-MEMORY\" (ngày 22/10/2026, nguồn: người dùng)\n- Mọi ngày viết dạng DD/MM/YYYY -> thay bằng MM/DD/YYYY (ngày 22/10/2026, nguồn: người dùng)\n- Mọi báo cáo phải bắt đầu bằng dòng \"Mã dự án: LAB-MEMORY\" -> thay bằng \"Mã dự án: KHANG-WEEK7\" (ngày 22/10/2026, nguồn: người dùng)\n- Mọi ngày viết dạng MM/DD/YYYY -> thay bằng DD/MM/YYYY (ngày 22/10/2026, nguồn: người dùng)\n- Mọi báo cáo phải bắt đầu bằng dòng \"Mã dự án: LAB-AGENT\" -> thay bằng \"Mã dự án: LAB-MEMORY\" (ngày 22/10/2026, nguồn: người dùng)\n- Mọi ngày viết dạng DD/MM/YYYY -> thay bằng MM/DD/YYYY (ngày 22/10/2026, nguồn: người dùng)\n- Mọi báo cáo phải bắt đầu bằng dòng \"Mã dự án: LAB-MEMORY\" -> thay bằng \"Mã dự án: LAB-AGENT\" (ngày 10/22/2026, nguồn: người dùng)\n- Mọi ngày viết dạng MM/DD/YYYY -> thay bằng DD/MM/YYYY (ngày 10/22/2026, nguồn: người dùng)\n</memory>",
+  "messages": [
+    {
+      "role": "user",
+      "type": "human",
+      "content": "Đọc data/weekly_notes.md, tạo báo cáo tuần và lưu vào output/weekly-report.md.",
+      "id": "9cb5054c-2f24-42e9-919f-b36a524c0a6b"
+    }
+  ],
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Đọc một file văn bản UTF-8 trong workspace và trả về JSON.\n\n    path là đường dẫn tương đối workspace, ví dụ: data/weekly_notes.md, output/summary.md.\n    Dùng để đọc dữ liệu đầu vào, file SKILL.md của một skill và các file reference trong thư mục skill.\n    Thành công: {\"ok\": true, \"path\": ..., \"content\": ...}. Lỗi: {\"ok\": false, \"error\": {\"code\": ..., \"message\": ...}}.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "write_file",
+      "description": "Ghi nội dung văn bản UTF-8 vào một file dưới output/ của workspace và trả về JSON.\n\n    path là đường dẫn tương đối workspace và phải bắt đầu bằng output/, ví dụ output/summary.md.\n    Tự tạo thư mục con. Ghi đè nếu file đã tồn tại.\n    Thành công: {\"ok\": true, \"path\": ..., \"bytes\": ..., \"status\": \"created\" | \"updated\"}. Lỗi: {\"ok\": false, \"error\": {...}}.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "bash",
+      "description": "Chạy một lệnh bash ngắn (bash -c) trong thư mục workspace và trả về JSON.\n\n    cwd là workspace, nên dùng đường dẫn tương đối như data/tasks.csv. `python` là Python của project.\n    Timeout 10 giây; không chạy tiến trình nền hay lệnh tương tác.\n    Kết quả: {\"ok\": true, \"exit_code\": 0, \"stdout\": \"...\", \"stderr\": \"\", \"timed_out\": false}.\n    ok=true nghĩa là lệnh đã chạy xong và có kết quả; exit_code khác 0 nghĩa là chương trình báo lỗi.\n    Timeout: {\"ok\": false, \"exit_code\": null, \"timed_out\": true, ...} kèm output một phần nếu có.",
+      "parameters": {
+        "properties": {
+          "command": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "message_count": 1,
+  "system_prompt_chars": 4511,
+  "message_chars": 78,
+  "usage": {
+    "input_tokens": 1995,
+    "output_tokens": 25,
+    "total_tokens": 2020,
+    "input_token_details": {},
+    "output_token_details": {}
+  }
+}

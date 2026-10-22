@@ -1,0 +1,23 @@
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+traces/*
+!traces/.gitkeep
+workspace/output/*
+
+# Local run evidence may contain user messages, provider errors or inherited results.
+evidence/
+state/
+*.log
+*.py[cod]
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
